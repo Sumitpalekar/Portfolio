@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Archivo_Black } from "next/font/google";
+import { Archivo_Black } from "next/font/google";
 import "./globals.css";
+
 import ElasticCursor from "@/components/ui/ElasticCursor";
 import Particles from "@/components/Particles";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -24,21 +25,13 @@ export const metadata: Metadata = {
     title: config.title,
     description: config.description.short,
     url: config.site,
-    images: [
-      {
-        url: config.ogImg,
-        width: 800,
-        height: 600,
-        alt: "Portfolio preview",
-      },
-    ],
+    siteName: config.title,
     type: "website",
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: config.title,
     description: config.description.short,
-    images: [config.ogImg],
   },
   robots: {
     index: true,
@@ -57,14 +50,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={[archivoBlack.className].join(" ")}>
+    <html lang="en" className={archivoBlack.className}>
       <head>
-        <Script
-          defer
-          src={process.env.UMAMI_DOMAIN}
-          data-website-id={process.env.UMAMI_SITE_ID}
-        ></Script>
-        {/* <Analytics /> */}
+        {/* Umami Analytics (safe even if env vars are undefined) */}
+        {process.env.UMAMI_DOMAIN && process.env.UMAMI_SITE_ID && (
+          <Script
+            defer
+            src={process.env.UMAMI_DOMAIN}
+            data-website-id={process.env.UMAMI_SITE_ID}
+          />
+        )}
       </head>
       <body>
         <ThemeProvider
@@ -76,6 +71,7 @@ export default function RootLayout({
             className="fixed inset-0 -z-10 animate-fade-in"
             quantity={100}
           />
+
           <Preloader>
             <SocketContextProvider>
               <RemoteCursors />
@@ -85,6 +81,7 @@ export default function RootLayout({
                 <Footer />
               </TooltipProvider>
             </SocketContextProvider>
+
             <Toaster />
             <EasterEggs />
             <ElasticCursor />
